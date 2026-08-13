@@ -1,0 +1,35 @@
+# MATLAB generated files
+slprj/
+**/slprj/
+*.slxc
+*.autosave
+*.asv
+*.m~
+*.mex*
+codegen/
+
+# Local QA and build intermediates
+tmp/
+report/qa_render/
+report/evidence/docx_visual_qa_render/
+report/final/
+report/source/
+artifacts/logs/
+artifacts/environment/
+report/evidence/EVIDENCE_INDEX.md
+report/evidence/logs/
+report/evidence/model_diagrams/
+report/evidence/figures/system_architecture_schematic.png
+report/source/*.aux
+report/source/*.log
+report/source/*.out
+report/source/*.toc
+
+# Superseded packaged deliveries retained locally
+progress_deliverables/
+progress_deliverables.zip
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/

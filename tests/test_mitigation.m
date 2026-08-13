@@ -1,0 +1,2 @@
+function tests=test_mitigation, tests=functiontests(localfunctions); end
+function improvesTest(testCase), root=init_project();A=load(fullfile(root,'results','sso','sso_before.mat'));B=load(fullfile(root,'results','mitigation','sso_after.mat'));Ma=calculate_metrics(A.R);Mb=calculate_metrics(B.R);verifyLessThan(testCase,Mb.power_osc_rms,Ma.power_osc_rms);verifyLessThan(testCase,real(Mb.eigenvalue),0);verifyEqual(testCase,A.R.P.grid.scr_final,B.R.P.grid.scr_final);end

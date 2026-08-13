@@ -1,0 +1,26 @@
+function generate_results_tables()
+root=init_project(); A=load(fullfile(root,'results','sso','sso_before.mat'));
+B=load(fullfile(root,'results','mitigation','sso_after.mat'));
+Mb=calculate_metrics(A.R); Ma=calculate_metrics(B.R);
+M=Mb; save(fullfile(root,'results','sso','metrics_before.mat'),'M');
+M=Ma; save(fullfile(root,'results','mitigation','metrics_after.mat'),'M');
+cases={char(A.R.case_name);char(B.R.case_name)};
+T=table(cases,[A.R.P.grid.scr_final;B.R.P.grid.scr_final], ...
+    [A.R.P.mitigation.enable;B.R.P.mitigation.enable], ...
+    [Mb.sso_frequency_fft;Ma.sso_frequency_fft],[Mb.prony_sigma;Ma.prony_sigma], ...
+    [Mb.eigen_damping_ratio;Ma.eigen_damping_ratio],[Mb.power_osc_rms;Ma.power_osc_rms], ...
+    [Mb.peak_current_pu;Ma.peak_current_pu],[Mb.vdc_max_deviation;Ma.vdc_max_deviation], ...
+    'VariableNames',{'Case','SCR','Mitigation','FFT_Hz','PronySigma_per_s','EigenDampingRatio','PowerOscRMS_pu','PeakCurrent_pu','VdcMaxDeviation_pu'});
+writetable(T,fullfile(root,'results','summary_cases.csv'));
+metric={'SSO frequency FFT (Hz)';'Prony frequency (Hz)';'Prony damping ratio';'Eigenvalue frequency (Hz)';'Eigenvalue damping ratio';'Power oscillation RMS (pu)';'Peak current (pu)';'Vdc max deviation (pu)'};
+before=[Mb.sso_frequency_fft;Mb.prony_frequency;Mb.prony_damping_ratio;Mb.eigen_frequency;Mb.eigen_damping_ratio;Mb.power_osc_rms;Mb.peak_current_pu;Mb.vdc_max_deviation];
+after=[Ma.sso_frequency_fft;Ma.prony_frequency;Ma.prony_damping_ratio;Ma.eigen_frequency;Ma.eigen_damping_ratio;Ma.power_osc_rms;Ma.peak_current_pu;Ma.vdc_max_deviation];
+change=after-before; Tm=table(metric,before,after,change,'VariableNames',{'Metric','Before','After','Change'});
+writetable(Tm,fullfile(root,'results','mitigation_comparison.csv'));
+modal={'Before';'After'}; Te=table(modal,[Mb.prony_frequency;Ma.prony_frequency],[Mb.prony_sigma;Ma.prony_sigma], ...
+    [real(Mb.eigenvalue);real(Ma.eigenvalue)],[Mb.eigen_frequency;Ma.eigen_frequency], ...
+    [Mb.eigen_damping_ratio;Ma.eigen_damping_ratio], ...
+    'VariableNames',{'Case','PronyFrequency_Hz','PronySigma_per_s','EigenReal_per_s','EigenFrequency_Hz','EigenDampingRatio'});
+writetable(Te,fullfile(root,'results','modal_comparison.csv'));
+fprintf('Result tables written under %s\n',fullfile(root,'results'));
+end

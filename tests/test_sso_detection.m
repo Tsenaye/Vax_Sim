@@ -1,0 +1,3 @@
+function tests=test_sso_detection, tests=functiontests(localfunctions); end
+function detectedTest(testCase), root=init_project(); L=load(fullfile(root,'results','sso','sso_before.mat')); M=calculate_metrics(L.R); verifyGreaterThan(testCase,M.sso_frequency_fft,1); verifyLessThan(testCase,M.sso_frequency_fft,50); verifyLessThan(testCase,abs(M.sso_frequency_fft-M.eigen_frequency),0.1); end
+function syntheticPronyTest(testCase), t=(0:.002:8)'; y=exp(-.35*t).*cos(2*pi*7.25*t); M=analyse_prony(t,y,12,[1 20],7.25); verifyEqual(testCase,M.frequency,7.25,'AbsTol',.02); verifyEqual(testCase,M.sigma,-.35,'AbsTol',.03); end

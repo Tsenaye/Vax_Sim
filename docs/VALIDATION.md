@@ -1,0 +1,26 @@
+# Validation
+
+Fresh-session validation executed 2026-08-13 14:53:23 in MATLAB 25.2.0.2998904 (R2025b).
+
+| Test | Status | Evidence |
+|---|---|---|
+| Authoritative SLX exists | PASS | D:\Documents\Jobs\Vax\Vataleni_PMSG_SSO\model\Vataleni_PMSG_SSO_Final.slx |
+| Model opens | PASS | load_system completed from repository root without project paths |
+| Model compile/update | PASS | SimulationCommand update completed |
+| No missing block implementations | PASS | Compile=1; external/custom S-Functions=0; native-vs-reference max abs error 3.33e-16 |
+| No unresolved custom S-functions | PASS | External/custom S-Functions: 0; embedded MATLAB Function engines: 8 |
+| No broken library links | PASS | Unresolved links: 0 |
+| No machine-specific paths | PASS | Machine-specific parameter strings: 0 |
+| No manual initialization or callbacks | PASS | Callbacks empty=1; standalone simulation=1 |
+| No algebraic loops | PASS | Algebraic loops: 0 |
+| Configured simulation completes | PASS | 60001 time samples to t=12.000 s |
+| Required logged signals exist | PASS | Logged matrix: [60001 35]; required channels: 35 |
+| All outputs finite | PASS | Finite values: 2100035 of 2100035 |
+| No NaN | PASS | NaN count: 0 |
+| No Inf | PASS | Inf count: 0 |
+| Baseline scenario | PASS | P_end=0.881502 pu; max Vdc deviation=0 pu |
+| SSO scenario | PASS | FFT=4.84467 Hz; eigenvalue=0.047491+30.414487i |
+| Mitigation scenario | PASS | Power oscillation RMS 0.0677542 -> 2.65677e-07 pu |
+| Figures regenerate | PASS | 17 fresh PNG figures generated |
+| Numerical result exports regenerate | PASS | Required exports present: 5/5; dt 2.0e-04 -> 1.0e-04 s, frequency change 0 Hz |
+| Report values trace to current results | PASS | Trace table and final PDF/DOCX consistent: 1 |
