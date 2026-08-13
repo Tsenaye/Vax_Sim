@@ -61,10 +61,11 @@ testName{6}='No broken library links'; status{6}=passfail(isempty(unresolved));
 evidence{6}=sprintf('Unresolved links: %d',numel(unresolved));
 
 machinePaths={}; callbacks={'PreLoadFcn','PostLoadFcn','InitFcn','StartFcn','StopFcn','CloseFcn'};
-callbackText='';
+callbackText=''; modelReferences={};
 if opened
     for k=1:numel(callbacks), callbackText=[callbackText ' ' get_param(modelName,callbacks{k})]; end %#ok<AGROW>
     blocks=find_system(modelName,'LookUnderMasks','all','FollowLinks','off','Type','Block');
+    modelReferences=find_system(modelName,'LookUnderMasks','all','FollowLinks','off','BlockType','ModelReference');
     for b=1:numel(blocks)
         dp=get_param(blocks{b},'DialogParameters');
         if ~isstruct(dp), continue; end
@@ -78,7 +79,8 @@ if opened
     end
 end
 testName{7}='No machine-specific paths'; status{7}=passfail(isempty(machinePaths));
-evidence{7}=sprintf('Machine-specific parameter strings: %d',numel(machinePaths));
+status{7}=passfail(isempty(machinePaths) && isempty(modelReferences));
+evidence{7}=sprintf('Machine-specific parameter strings: %d; external model references: %d',numel(machinePaths),numel(modelReferences));
 
 if opened
     try
