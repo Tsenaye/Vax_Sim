@@ -41,6 +41,16 @@ matlab -batch "cd('<repo-root>'); run('validation/validate_project.m')"
 
 The validator throws an error unless all 20 checks pass.
 
+The repository-level package audit can also be run without MATLAB:
+
+```text
+python3 tools/audit_slx.py
+```
+
+It verifies that the Git path is one intact SLX package, that extracted package
+internals are not tracked separately, and that neither retired custom
+S-Function names nor external Model Reference blocks occur in the package.
+
 ## Outputs
 
 - Scenario data: `results/baseline/`, `results/sso/`, `results/mitigation/`
