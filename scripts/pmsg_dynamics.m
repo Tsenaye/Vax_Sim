@@ -20,8 +20,9 @@ Lf=P.filter.X; Lt=Lf+Xg; R=P.filter.R+Rg; E=P.grid.E;
 vd = E*cos(delta)+Rg*id-Xg*iq;
 vq = -E*sin(delta)+Rg*iq+Xg*id;
 pout = vd*id+vq*iq;
-dvdc = (Pm*omega-pout)/(P.dc.C_pu*max(vdc,0.25));
-id_ref = Pm + P.gsc.Kp_dc*(vdc-P.dc.v_ref)+xi_dc;
+Pgen = iqm*omega;
+dvdc = (Pgen-pout)/(P.dc.C_pu*max(vdc,0.25));
+id_ref = Pgen + P.gsc.Kp_dc*(vdc-P.dc.v_ref)+xi_dc;
 iq_ref = 0;
 if P.mitigation.enable, Ki_pll=P.pll.Ki_mitigated; else, Ki_pll=P.pll.Ki_base; end
 domega_pll_pu = P.pll.Kp*vq+xi_pll;

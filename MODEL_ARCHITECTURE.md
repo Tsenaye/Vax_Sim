@@ -2,7 +2,7 @@
 
 ## Authoritative artifact
 
-`model/Vataleni_PMSG_SSO_Final.slx` is the only authoritative model. It is a self-contained Simulink file: core system equations and controller states are implemented with native Integrator blocks and MATLAB Function blocks whose source is stored inside the SLX.
+`model/Vataleni_PMSG_SSO_Final.slx` is the only authoritative model. It is a self-contained Simulink file. Turbine, MSC, DC-link, GSC, PLL, grid-current and PCC equations use connected native math blocks, with native Integrator blocks for the eleven continuous states. One embedded MATLAB Function block assembles diagnostic outputs and reconstructed abc waveforms.
 
 The model has no external custom Level-2 MATLAB S-Function dependency, no model callback, no base-workspace initialization requirement, no unresolved library link and no machine-specific path.
 
@@ -12,12 +12,12 @@ The model has no external custom Level-2 MATLAB S-Function dependency, no model 
 |---|---|---|---|
 | Wind Turbine + PMSG | wind speed, machine q-axis current | rotor speed, mechanical power, diagnostic vector | `omega_r` |
 | MSC Control | rotor speed | machine q-axis current, diagnostic vector | `iq_m`, `xi_speed` |
-| DC Link | mechanical power, rotor speed, grid power | DC-link voltage | `vdc` |
-| GSC Control | DC voltage, grid `id/iq`, mechanical power | converter `vcd/vcq`, diagnostic vector | `xi_dc`, `xi_id`, `xi_iq` |
+| DC Link | electromagnetic torque, rotor speed, grid power | DC-link voltage | `vdc` |
+| GSC Control | DC voltage, grid `id/iq`, generator power | converter `vcd/vcq`, diagnostic vector | `xi_dc`, `xi_id`, `xi_iq` |
 | PLL | PCC `vq`, mitigation selector | angle, pu frequency deviation, diagnostic vector | `delta_pll`, `xi_pll` |
 | Grid Current Dynamics | converter voltage, PLL angle/frequency, SCR | grid `id/iq`, diagnostic vector | `id`, `iq` |
 | PCC Interface | PLL angle, grid `id/iq`, SCR | PCC `vq`, active power, diagnostic vector | none |
-| Measurements and Analysis Interface | seven diagnostic vectors/scalars plus time | 35-channel log vector | none |
+| Measurements and Analysis Interface | seven diagnostic vectors/scalars plus time | 35-channel log vector and twelve engineering Scopes | none |
 
 The diagnostic vectors exist only to keep result routing compact. They do not change the physical/control signal paths.
 
@@ -25,7 +25,7 @@ The diagnostic vectors exist only to keep result routing compact. They do not ch
 
 ### Wind turbine and PMSG rotor
 
-The embedded aerodynamic function evaluates the documented exponential `Cp(lambda,beta)` fit, clips `Cp` to `[0, 0.50]`, and limits mechanical power to `1.15 pu`.
+The native aerodynamic blocks evaluate the documented exponential `Cp(lambda,beta)` fit, clip `Cp` to `[0, 0.50]`, and limit mechanical power to `1.15 pu`.
 
 ```text
 lambda = omega_r * omega_base * R / v_w
@@ -47,15 +47,20 @@ The machine electrical inner loop is an averaged q-axis torque-current channel. 
 ### DC link
 
 ```text
-d(vdc)/dt = (P_m * omega_r - P_grid) / [C_pu * max(vdc, 0.25)]
+d(vdc)/dt = (T_e * omega_r - P_grid) / [C_pu * max(vdc, 0.25)]
 ```
 
 The denominator guard represents DC under-voltage protection against numerical division by zero.
+Here `T_e` is the electromagnetic torque represented by `iq_m` on the chosen
+per-unit base, so `P_gen = T_e * omega_r`. The generator electrical-power
+Product block also feeds the GSC outer-loop reference. This corrects the
+earlier aerodynamic-power-times-speed double scaling. Machine copper and
+converter losses remain outside the reduced-order energy balance.
 
 ### Grid-side control
 
 ```text
-id_ref = P_m + Kp_dc(vdc - vdc_ref) + xi_dc
+id_ref = P_gen + Kp_dc(vdc - vdc_ref) + xi_dc
 iq_ref = 0
 vcd = E + Kp_current(id_ref - id) + xi_id - Xf*iq
 vcq = Kp_current(iq_ref - iq) + xi_iq + Xf*id
@@ -103,7 +108,11 @@ The SLX model workspace stores only deterministic scenario defaults used by nati
 | `grid_disturbance_time` | 2 s |
 | `mitigation_enable` | 0 |
 
-Fixed physical/controller constants and initial conditions are compiled into the embedded MATLAB Function and Integrator block parameters when the model is built. Scenario automation overrides the model-workspace variables with `Simulink.SimulationInput`; a standalone default run needs no override.
+Fixed physical/controller constants and initial conditions are stored in native block and Integrator parameters inside the SLX. Scenario automation overrides the model-workspace variables with `Simulink.SimulationInput`; a standalone default run needs no override. The optional `parameters/VaxSim_Parameters.m` is a human-editable reference only and is not called by the model.
+
+## Scope diagnostics
+
+Open `Measurements and Analysis Interface > Engineering Scopes` to inspect the twelve connected native Scope blocks. Signals are separated by units into wind speed, rotor speed, torque, machine-side current, DC-link voltage, grid currents, converter voltage commands, PCC voltage, grid power, PLL frequency, phase error, and active-power SSO response.
 
 ## Solver and sample-time configuration
 

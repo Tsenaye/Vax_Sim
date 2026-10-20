@@ -3,7 +3,7 @@ function R = run_case(case_name,save_result)
 if nargin<2, save_result=true; end
 root=init_project(); P=configure_case(case_name);
 model='Vataleni_PMSG_SSO_Final'; modelPath=fullfile(root,'model',[model '.slx']);
-if ~isfile(modelPath), build_model(); end
+assert(isfile(modelPath),'The saved authoritative Simulink model is missing.');
 load_system(modelPath);
 in=Simulink.SimulationInput(model);
 scenario = { ...

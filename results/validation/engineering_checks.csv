@@ -1,0 +1,5 @@
+Case,max_mechanical_power_residual_pu,max_pcc_active_power_residual_pu,max_pcc_reactive_power_residual_pu,dc_energy_derivative_residual_rms_pu,msc_current_tracking_rms_pu,max_vdc_deviation_pu
+baseline,0,0,0,0,0,0
+wind_step,0,0,0,1.16813893362412e-10,0.000907190448913346,8.19371504952038e-05
+sso,0,0,0,3.58219328482342e-07,0,0.0448709605604221
+mitigation,0,0,0,8.24173418513116e-08,0,0.0148466696176117

@@ -1,7 +1,8 @@
-%RUN_ALL_SCENARIOS Rebuild and run all authoritative study scenarios.
+%RUN_ALL_SCENARIOS Run all scenarios from the saved authoritative SLX.
 root=fileparts(fileparts(mfilename('fullpath')));
 addpath(fullfile(root,'scripts'));
-build_model();
+assert(isfile(fullfile(root,'model','Vataleni_PMSG_SSO_Final.slx')), ...
+    'The saved authoritative model is missing.');
 run_case('baseline',true);
 run_case('wind_step',true);
 run_case('sso_before',true);

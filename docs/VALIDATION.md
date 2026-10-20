@@ -1,6 +1,6 @@
 # Validation
 
-Fresh-session validation executed 2026-08-13 14:53:23 in MATLAB 25.2.0.2998904 (R2025b).
+Fresh-session validation executed 2026-10-21 00:11:58 in MATLAB 25.2.0.2998904 (R2025b).
 
 | Test | Status | Evidence |
 |---|---|---|
@@ -8,7 +8,7 @@ Fresh-session validation executed 2026-08-13 14:53:23 in MATLAB 25.2.0.2998904 (
 | Model opens | PASS | load_system completed from repository root without project paths |
 | Model compile/update | PASS | SimulationCommand update completed |
 | No missing block implementations | PASS | Compile=1; external/custom S-Functions=0; native-vs-reference max abs error 3.33e-16 |
-| No unresolved custom S-functions | PASS | External/custom S-Functions: 0; embedded MATLAB Function engines: 8 |
+| No unresolved custom S-functions | PASS | External/custom S-Functions: 0; embedded MATLAB Function engines: 1 |
 | No broken library links | PASS | Unresolved links: 0 |
 | No machine-specific paths | PASS | Machine-specific parameter strings: 0 |
 | No manual initialization or callbacks | PASS | Callbacks empty=1; standalone simulation=1 |

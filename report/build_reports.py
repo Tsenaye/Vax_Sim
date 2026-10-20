@@ -198,13 +198,13 @@ def technical_report():
     bullet(doc,"Mitigation: PLL integral gain changes from 2.8 to 0.5 with all other case parameters held equal.")
 
     doc.add_heading("2. System architecture",1)
-    para(doc,"The top-level diagram is organized left-to-right. Compact diagnostic vectors feed the logging interface without altering the physical signal paths. Every continuous state is an Integrator block; each equation set is stored in an embedded MATLAB Function block inside the SLX.")
+    para(doc,"The top-level diagram is organized left-to-right. Compact diagnostic vectors feed the logging interface without altering the physical signal paths. Seven equation groups use connected native Simulink math blocks and every continuous state is an Integrator. One embedded MATLAB Function block assembles the diagnostic vector and reconstructed phase waveforms.")
     figure(doc,SNAP/"top_level.png","Figure 1. Authoritative top-level Simulink architecture.",6.4)
     table(doc,["Subsystem","Inputs","Outputs / states"],[
         ["Wind Turbine + PMSG","wind speed, machine iq","rotor speed, mechanical power/torque; omega_r"],
         ["MSC Control","rotor speed","machine iq and reference; iq_m, speed PI state"],
-        ["DC Link","mechanical power, speed, grid power","vdc; capacitor-energy state"],
-        ["GSC Control","vdc, id, iq, mechanical power","vcd/vcq commands; three PI states"],
+        ["DC Link","electromagnetic torque, speed, grid power","vdc; capacitor-energy state"],
+        ["GSC Control","vdc, id, iq, generator power","vcd/vcq commands; three PI states"],
         ["PLL","PCC vq, mitigation selector","angle, frequency deviation; angle and PI states"],
         ["Grid Current","converter voltage, PLL frame, SCR","id/iq; two current states"],
         ["PCC Interface","angle, id, iq, SCR","vd/vq, P/Q, voltage magnitude"],
@@ -220,9 +220,10 @@ def technical_report():
     equation(doc,"d i_qm/dt = (i_qm,ref - i_qm)/tau_i ;  d xi_speed/dt = Ki_speed(omega_r - 1)")
     para(doc,"The machine electrical inner loop is an averaged first-order torque-current channel. Machine d-axis current is zero in this reduced-order representation; switching-level machine voltage references are therefore outside the model fidelity.")
     doc.add_heading("3.3 DC link",2)
-    equation(doc,"d v_dc/dt = (P_m omega_r - P_grid) / [C_pu max(v_dc, 0.25)]")
+    equation(doc,"d v_dc/dt = (T_e omega_r - P_grid) / [C_pu max(v_dc, 0.25)]")
+    para(doc,"Generator electrical input is electromagnetic torque times rotor speed. The reduced-order machine assumes ideal conversion between air-gap power and the DC link; explicit stator copper and converter losses are outside this model.")
     doc.add_heading("3.4 Grid-side converter",2)
-    equation(doc,"i_d,ref = P_m + Kp_dc(v_dc - v_dc,ref) + xi_dc ;  i_q,ref = 0")
+    equation(doc,"i_d,ref = P_gen + Kp_dc(v_dc - v_dc,ref) + xi_dc ;  i_q,ref = 0")
     equation(doc,"v_cd = E + Kp_i(i_d,ref - i_d) + xi_id - X_f i_q")
     equation(doc,"v_cq = Kp_i(i_q,ref - i_q) + xi_iq + X_f i_d")
     doc.add_heading("3.5 PLL and weak-grid interface",2)
@@ -279,7 +280,7 @@ def technical_report():
 
     doc.add_heading("10. Validation and portability",1)
     para(doc,"The validator starts with bdclose('all'), clear and clc. It opens and compiles the authoritative SLX without adding project scripts, executes its default simulation, audits S-Functions, callbacks, unresolved links, machine paths and algebraic loops, then regenerates baseline, SSO, mitigation, wind-step, figures and compact result exports. It throws an error unless all twenty checks pass.")
-    bullet(doc,"Core dynamics: embedded MATLAB Function blocks plus native Integrator, Step, Constant, Mux and routing blocks.")
+    bullet(doc,"Core dynamics: seven connected native math subsystems, eleven Integrators, and one internal MATLAB Function block for diagnostic assembly.")
     bullet(doc,"Custom Level-2 MATLAB S-Functions in authoritative model: zero.")
     bullet(doc,"Model callbacks: empty.")
     bullet(doc,"Unresolved library links: zero.")
@@ -290,12 +291,21 @@ def technical_report():
     bullet(doc,"The converter and machine are averaged; semiconductor switching, PWM ripple and detailed magnetic saturation are excluded.")
     bullet(doc,"The rotor is a single-mass inertia; shaft torsional modes are not represented.")
     bullet(doc,"The machine-side electrical loop is reduced to a first-order q-axis torque-current response with id = 0.")
+    bullet(doc,"Generator stator copper losses and detailed converter losses are not represented in the DC energy balance.")
     bullet(doc,"Mitigation is evaluated for the documented SCR step and nominal operating point, not a full grid-code envelope.")
     bullet(doc,"The study is a model-based investigation and is not a substitute for field, controller-hardware or EMT validation.")
 
     doc.add_heading("12. Conclusions",1)
     para(doc,"The repaired SLX is a portable, self-contained implementation of the recovered nonlinear averaged model. The weak-grid case produces an internally consistent 4.84 Hz SSO identified by FFT, Prony and eigenanalysis. The tested PLL-gain mitigation changes the critical modal real part from positive to negative and materially reduces DC-link deviation, peak current and active-power oscillation for the controlled comparison. The model, scripts, figures, result tables and reports are regenerated from the same authoritative equations and scenario definitions.")
 
+    doc.add_heading("13. References and parameter provenance",1)
+    para(doc,"The literature supports the architecture and analysis methods. Only the 5 MW machine rating is taken as a numeric model value from a cited paper. The 690 V base, rotor, filter, DC-link, network and controller values are documented engineering assumptions or study tuning; the simulated 4.84 Hz mode is a project result, not a published benchmark target. See docs/SOURCE_AUDIT.md and docs/PARAMETERS.md for equation and value traceability.")
+    bullet(doc,"C. Wang, C. Liu, J. Yu and S. Xu, 'Research on Sub-synchronous Oscillation Characteristics between PMSG-based Wind Farms and Weak AC Grids Based on Prony Method,' 2019, DOI 10.1109/EI247390.2019.9061793. GSC structure, SCR and Prony methodology; 5 MW rating.")
+    bullet(doc,"X. Zhan, C. Liu and Z. Wang, 'Analysis and control on Sub-synchronous oscillation (SSO) of HVDC transmission for large-scale PMSG-based wind farm integration,' 2019, DOI 10.1049/joe.2018.8811. PMSG dq equations and control-mediated SSO context; HVDC-specific controller is not implemented here.")
+    bullet(doc,"P. Kundur, Power System Stability and Control, 1994, ISBN 0-07-035958-X. Modal frequency and damping conventions.")
+    bullet(doc,"M. Bongiorno, A. Petersson and E. Agneholm, The Impact of Wind Farms on Subsynchronous Resonance in Power Systems, Elforsk report 11:29, 2011. Complementary time, frequency and eigenvalue analysis context.")
+
+    doc.add_page_break()
     doc.add_heading("Appendix A. Logged signal dictionary",1)
     signals=["wind_speed","omega_r","torque_m","power_m","iq_machine","vdc","id_grid","iq_grid","power_e","reactive_q","vd_pcc","vq_pcc","v_pcc","pll_angle","ia","va","current_pu","scr","cp","lambda","turbine_speed","electrical_rotor_speed","torque_e","id_machine","iq_machine_reference","vcd_reference","vcq_reference","pll_frequency_hz","sso_signal","damping_gain","controller_command","grid_voltage_pu","id_grid_reference","iq_grid_reference","pll_ki_selected"]
     split=18
@@ -306,12 +316,6 @@ def technical_report():
         right=[j+1,signals[j]] if j<len(signals) else ['', '']
         signal_rows.append(left+right)
     table(doc,["#","Signal","#","Signal"],signal_rows,[0.45,2.8,0.45,2.8])
-    doc.add_heading("Appendix B. Reproduction",1)
-    para(doc,"Fresh validation command:")
-    para(doc,"matlab -batch \"cd('<repo-root>'); run('validation/validate_project.m')\"")
-    para(doc,"Independent standalone simulation command:")
-    para(doc,"matlab -batch \"cd('<repo-root>'); load_system('model/Vataleni_PMSG_SSO_Final.slx');")
-    para(doc,"out=sim('Vataleni_PMSG_SSO_Final')\"")
     return doc
 
 
@@ -349,7 +353,7 @@ def explainer():
     bullet(doc,f"Time-domain RMS: the late active-power oscillation changes from {float(BEFORE['PowerOscRMS_pu']):.6f} pu to {float(AFTER['PowerOscRMS_pu']):.3e} pu.")
     bullet(doc,f"DC-link excursion: maximum deviation changes from {float(BEFORE['VdcMaxDeviation_pu']):.4f} pu to {float(AFTER['VdcMaxDeviation_pu']):.4f} pu.")
     doc.add_heading("What was repaired",1)
-    para(doc,"The earlier SLX contained Level-2 MATLAB S-Function blocks whose external files were not available when a user opened the model. Those blocks were replaced by native Integrator blocks and embedded MATLAB Function equations inside the SLX. The stop time, fixed step, scenario defaults and initial conditions are also stored in the model, so pressing Run no longer depends on an initialization script or a pre-populated base workspace.")
+    para(doc,"The earlier SLX contained Level-2 MATLAB S-Function blocks whose external files were not available when a user opened the model. The seven plant and controller equation groups now use connected native Simulink math blocks and native Integrators. One internal MATLAB Function block assembles diagnostics. The stop time, fixed step, scenario defaults and initial conditions are stored in the model, so pressing Run requires no initialization script or pre-populated base workspace.")
     doc.add_heading("Interpretation",1)
     para(doc,"The agreement of FFT, Prony and eigenanalysis around the pre-mitigation 4.84 Hz mode supports the conclusion that the oscillation is generated by the model dynamics rather than by plotting artifacts. The mitigation result is strong for the tested operating point, but the model is averaged and reduced-order; broader robustness and hardware conclusions require additional studies.")
     return doc

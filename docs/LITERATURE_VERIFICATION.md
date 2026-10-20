@@ -1,5 +1,12 @@
 # Literature Verification
 
+**Fidelity correction (20 October 2026):** The saved SLX implements a reduced-order
+machine-side q-axis torque/current response. It does not implement the full stator
+d/q voltage and flux differential equations in Zhan et al. [4]. The table's
+PMSG voltage/flux comparison is therefore partial context, not a model-equation
+match. The model is suitable for the documented averaged converter/grid benchmark;
+full PMSG electrical validation remains open.
+
 This document cross-checks the implemented model against the actual reference material in
 `Background Docs/Reference articles.zip` (extracted text: `tmp/source/Referenvce/{2,4,5,6}.txt`).
 Equations quoted below are transcribed directly from those files, not from memory or general

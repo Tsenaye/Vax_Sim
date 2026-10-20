@@ -24,7 +24,7 @@ The surface-PMSG electromagnetic relationship is represented in per unit by (T_e
 The DC-link energy balance is
 
 \[
-C_{dc,pu}V_{dc}\dot V_{dc}=P_m\omega_r-P_{pcc}.
+C_{dc,pu}V_{dc}\dot V_{dc}=T_e\omega_r-P_{pcc}.
 \]
 
 For SCR-controlled grid impedance (X_g=1/SCR, R_g=X_g/(X/R)), the quasi-steady PCC voltage in the PLL frame is

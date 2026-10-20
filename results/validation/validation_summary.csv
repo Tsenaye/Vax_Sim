@@ -3,7 +3,7 @@ Authoritative SLX exists,PASS,"D:\Documents\Jobs\Vax\Vataleni_PMSG_SSO\model\Vat
 Model opens,PASS,"load_system completed from repository root without project paths"
 Model compile/update,PASS,"SimulationCommand update completed"
 No missing block implementations,PASS,"Compile=1; external/custom S-Functions=0; native-vs-reference max abs error 3.33e-16"
-No unresolved custom S-functions,PASS,"External/custom S-Functions: 0; embedded MATLAB Function engines: 8"
+No unresolved custom S-functions,PASS,"External/custom S-Functions: 0; embedded MATLAB Function engines: 1"
 No broken library links,PASS,"Unresolved links: 0"
 No machine-specific paths,PASS,"Machine-specific parameter strings: 0"
 No manual initialization or callbacks,PASS,"Callbacks empty=1; standalone simulation=1"

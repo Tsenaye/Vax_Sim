@@ -1,0 +1,5 @@
+*.slx -diff -text
+*.mat -diff -text
+*.docx -diff -text
+*.pdf -diff -text
+*.png -diff -text
