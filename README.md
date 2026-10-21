@@ -4,6 +4,16 @@ The authoritative `model/Vataleni_PMSG_SSO_Final.slx` is a self-contained, avera
 
 The validated reduced-order predecessor is preserved at Git tag `benchmark-aa80f23` and under `archive/benchmark-aa80f23/`. Its 4.84 Hz result does not describe this physical model.
 
+## VIEW RESULTS AND FINAL DELIVERY
+
+- [Start here: complete delivery](Final_Delivery/README_START_HERE.md)
+- [Open the standalone MATLAB model](Final_Delivery/Vataleni_PMSG_SSO_Final.slx)
+- [Simulation results and quantitative summary](Final_Delivery/Results/README_RESULTS.md)
+- [Three-slide PowerPoint](Final_Delivery/Vataleni_PMSG_SSO_Three_Slide_Presentation.pptx)
+- [Three-page illustrated PDF](Final_Delivery/Vataleni_PMSG_SSO_Three_Page_Explainer.pdf)
+- [Validation report](Final_Delivery/Vataleni_PMSG_SSO_Validation_Report.pdf)
+- [Download the complete ZIP](Vataleni_PMSG_SSO_Final_Delivery.zip)
+
 ## Run the saved model
 
 ```matlab

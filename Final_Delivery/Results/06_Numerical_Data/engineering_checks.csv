@@ -1,0 +1,26 @@
+check,status,observed,threshold,unit
+PMSG d equation RMS residual,PASS,1.8632879885150325e-07,0.01,V
+PMSG q equation RMS residual,PASS,3.451589772685696e-07,0.01,V
+Electrical speed identity RMS,PASS,0.0,1e-10,rad/s
+Electromagnetic torque maximum error,PASS,7.450580596923828e-09,0.0001,N m
+Independent turbine shaft torque balance RMS,PASS,81.20221932141177,200,N m
+Mechanical electrical copper balance RMS,PASS,18.812537269055255,100,W
+DC capacitor energy balance RMS,PASS,0.9697405629588531,100,W
+MSC fixed loss RMS error,PASS,0.00036665255230770665,100,W
+GSC plus filter loss RMS error,PASS,14.193197818737627,100,W
+Baseline DC late absolute error,PASS,0.04989456776570478,10,V
+Baseline PLL late frequency error,PASS,2.5932835399089527e-05,0.1,rad/s
+Baseline PCC q late RMS,PASS,0.011778289622870405,0.1,V
+Machine RMS current under 5 kA,PASS,3674.424061234154,5000,A
+Machine line RMS voltage near 690 V,PASS,9.707220736379554,100,V
+Machine q reference within 6.5 kA,PASS,5397.49091650609,6500.001,A
+Grid d reference within 6.5 kA,PASS,6500.0,6500.001,A
+Weak grid oscillation amplification,PASS,2.235359073972948,1.5,ratio
+Mitigation early q RMS reduction,PASS,7.209068193821522,2,ratio
+Mitigation late q RMS reduction,PASS,238.27176821468802,2,ratio
+All case signals finite,PASS,1.0,1,boolean
+Baseline generator electrical output,PASS,4.344707364947494,3,MW
+Weak grid DC remains positive,PASS,1100.65228903448,500,V
+Mitigated DC remains positive,PASS,1102.14446435399,500,V
+Solver step DC late mean difference,PASS,4.2114248799407505e-05,1,V
+Solver step PCC power late mean difference,PASS,4.544642503373325,10000,W
