@@ -1,0 +1,17 @@
+# Final delivery status — physical PMSG–SSO model
+
+**Decision:** The requested averaged physical model is completed and validated for the four specified scenarios. The authoritative file is [`model/Vataleni_PMSG_SSO_Final.slx`](../model/Vataleni_PMSG_SSO_Final.slx), saved by MATLAB R2025b. It runs from a fresh MATLAB process with its default parameters inside the model workspace.
+
+| Completion item | Delivered and verified result |
+|---|---|
+| Physical equipment | Native Simscape Electrical wind turbine, mechanical shaft/inertia, PMSM, averaged bidirectional machine- and grid-side converters, 0.408 F DC capacitor, RL filter, PCC and grid impedance, 690 V three-phase source, electrical/shaft sensors, references and solver configuration. |
+| Machine states | The native PMSM integrates genuine stator d- and q-axis electrical currents and rotor dynamics. Independent checks use measured machine voltage/current, electrical speed and electromagnetic torque. No first-order q-axis plant shortcut remains in the final SLX. |
+| Converter fidelity | Two native average-value three-phase converters represent bidirectional phase-voltage/current and DC power transfer, each with an assumed 5 kW fixed loss. PWM switching and semiconductor harmonics are outside this model. |
+| Controls and scopes | MSC speed and d/q current loops; GSC DC voltage and d/q current loops; synchronous-reference-frame PLL; retuned PLL mitigation; 12 live native Scopes connected to physical measurements. |
+| Independently reproduced results | Four 6 s simulations from the final saved SLX, a fresh-process default run, 0.5 ms versus 1 ms maximum-step comparison, 23-state snapshot linearization, FFT and AR(2)/Prony transient estimates. All 25 numerical checks pass. |
+| Observed SSO | The same 12 to 13 m/s step increases early PCC q-voltage standard deviation from 1.788 V at nominal external SCR 10 to 3.997 V at SCR 5. The weak-grid response is **decaying**, with a 4.681 Hz FFT peak and a 4.638 Hz, 5.24% damped snapshot mode. No sustained instability or critical SCR is claimed. |
+| Mitigation | Increasing PLL proportional gain from 0.00558 to 0.02 rad/(s V) reduces the early weak-grid metric to 0.554 V and increases damping of the matched approximately 4.6 Hz mode to 18.99%. The least-damped *overall* mitigated mode is a different 1.843 Hz mode. |
+| Engineering assumptions | Single-mass shaft; assumed machine, grid, filter, turbine and controller numbers except the literature-supported 5 MW rating; nominal external SCR with an additional finite source impedance. No site calibration, transformer saturation, shaft torsion, protection, thermal states or switching harmonics. |
+| Git delivery | Commit `d370ff1b0b41397eea80616251d113e98b83175f` was pushed to `origin/codex/native-reconstruction` and verified by `git ls-remote` on 2026-10-21. Historical benchmark tag `benchmark-aa80f23` remains at `aa80f23012b3ff4d4a60bce963ef0727d58aafe6`. The branch has not been merged into `main`. |
+
+Evidence and methods: [`docs/TECHNICAL_REPORT.md`](../docs/TECHNICAL_REPORT.md), [`docs/VERIFICATION_REPORT.md`](../docs/VERIFICATION_REPORT.md), [`results/physical/final_saved_model_run.log`](../results/physical/final_saved_model_run.log), [`results/physical/engineering_checks.csv`](../results/physical/engineering_checks.csv), and [`artifacts/model_snapshots/`](../artifacts/model_snapshots/). The rendered technical, model-guide and validation reports are in this directory as DOCX and PDF files.
