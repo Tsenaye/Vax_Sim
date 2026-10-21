@@ -1,39 +1,48 @@
 function P = VaxSim_Parameters()
-%VAXSIM_PARAMETERS Optional editable parameter reference and scenario presets.
-% The SLX contains its own defaults and does not call this file. To change a
-% value in a standalone model, edit the matching block or Model Workspace
-% variable inside Simulink and save the SLX.
-
-P.base.S = 5e6;                 % VA; Wang et al. 2019 turbine rating
-P.base.Vll = 690;               % V rms; engineering assumption
-P.base.f = 50;                  % Hz
-P.wind.rho = 1.225;             % kg/m^3; engineering assumption
-P.wind.R = 55;                  % m; engineering assumption
-P.wind.v_nom = 12;              % m/s
-P.wind.beta = 0;                % deg
-P.pmsg.H = 4;                   % s; engineering assumption
-P.pmsg.D = 0.02;                % pu; engineering assumption
-P.msc.Kp_speed = 2;
-P.msc.Ki_speed = 1;
-P.msc.tau_current = 0.02;       % s; reduced order closed current loop
-P.dc.C_pu = 0.08;               % s; energy-normalized capacitance
-P.dc.v_ref = 1;
-P.gsc.Kp_current = 0.30;
-P.gsc.Ki_current = 20;
-P.gsc.Kp_dc = 0.80;
-P.gsc.Ki_dc = 20;
-P.filter.R = 0.01;              % pu
-P.filter.X = 0.15;              % pu
-P.grid.E = 1;                   % pu
-P.grid.xr = 10;
-P.grid.scr_baseline = 10;
-P.grid.scr_weak = 5;
-P.pll.Kp = 0.01;
-P.pll.Ki_unmitigated = 2.80;
-P.pll.Ki_mitigated = 0.50;
-P.sim.dt = 2e-4;                % s
-P.sim.stop = 12;                % s
-P.scenarios.baseline = struct('scr_initial',10,'scr_final',10,'mitigation_enable',0);
-P.scenarios.sso = struct('scr_initial',10,'scr_final',5,'mitigation_enable',0);
-P.scenarios.mitigation = struct('scr_initial',10,'scr_final',5,'mitigation_enable',1);
+% Optional reference for editing the embedded model workspace and blocks.
+% The SLX does not call this function. SI units throughout unless stated.
+P.rating_MW = 5;            % Wang et al. 2019 single-turbine rating
+P.grid.Vline_rms = 690;    % engineering assumption, V
+P.grid.frequency = 50;     % engineering assumption, Hz
+P.grid.SCR_default = 10;
+P.grid.SCR_weak = 5;
+P.grid.R_at_SCR10 = 0.000947;   % ohm, engineering assumption
+P.grid.L_at_SCR10 = 3.02e-5;   % H, engineering assumption
+P.wind.rho = 1.225;        % kg/m^3
+P.wind.radius = 55;       % m
+P.wind.initial = 12;      % m/s
+P.wind.final = 12;        % m/s, model-workspace default
+P.wind.step_time = 2;     % s
+P.machine.pole_pairs = 23;
+P.machine.flux_linkage = 17.80; % Wb
+P.machine.Ld = 7.53e-4;  % H
+P.machine.Lq = 7.53e-4;  % H
+P.machine.Rs = 9.522e-4; % ohm
+P.machine.J_internal = 1.0e6; % kg m^2
+P.machine.J_shaft = 2.018e7; % kg m^2
+P.machine.omega_initial = 1.3745454545454545; % rad/s
+P.msc.speed_Kp = 8600;    % A/(rad/s)
+P.msc.speed_Ki = 4300;    % A/rad
+P.msc.current_Kp = 0.03765; % ohm
+P.msc.current_Ki = 0.0476;  % ohm/s
+P.dc.C = 0.408;           % F
+P.dc.Vref = 1400;        % V
+P.filter.R = 9.522e-4;  % ohm
+P.filter.L = 4.55e-5;    % H
+P.gsc.current_Kp = 0.01; % ohm
+P.gsc.current_Ki = 0.5;  % ohm/s
+P.gsc.dc_Kp = 3.38;      % A/V
+P.gsc.dc_Ki = 84.5;      % A/(V s)
+P.pll.Kp_default = 0.00558; % rad/(s V)
+P.pll.Kp_mitigated = 0.02;
+P.pll.Ki = 1.56;          % rad/(s^2 V)
+P.converter.fixed_loss = 5000; % W each
+P.converter.modulation_limit = 0.98;
+P.converter.current_limit = 6500; % A
+P.sim.max_step = 0.001;  % s
+P.sim.stop = 6;          % s
+P.scenarios.baseline = struct('wind_final',12,'grid_scr',10,'mitigation_enable',0);
+P.scenarios.wind_variation = struct('wind_final',13,'grid_scr',10,'mitigation_enable',0);
+P.scenarios.weak_grid = struct('wind_final',13,'grid_scr',5,'mitigation_enable',0);
+P.scenarios.weak_grid_mitigated = struct('wind_final',13,'grid_scr',5,'mitigation_enable',1);
 end

@@ -11,6 +11,17 @@ codegen/
 # Local QA and build intermediates
 tmp/
 report/qa_render/
+report/qa_*/
+results/physical/*_linearization.mat
+archive/benchmark-aa80f23/artifacts/logs/
+archive/benchmark-aa80f23/report/evidence/logs/
+archive/benchmark-aa80f23/report/evidence/EVIDENCE_INDEX.md
+archive/benchmark-aa80f23/report/evidence/docx_visual_qa_render/
+archive/benchmark-aa80f23/report/evidence/figures/system_architecture_schematic.png
+archive/benchmark-aa80f23/report/evidence/model_diagrams/
+archive/benchmark-aa80f23/report/final/
+archive/benchmark-aa80f23/report/qa_render/
+archive/benchmark-aa80f23/report/source/
 report/evidence/docx_visual_qa_render/
 report/final/
 report/source/

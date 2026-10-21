@@ -1,0 +1,10 @@
+MATLAB: 25.2.0.2998904 (R2025b)
+Model: Vataleni_PMSG_SSO_Final
+Fresh base workspace scenario variables: none
+Scope count: 12
+Stop time: 6.000 s
+All Scope input ports have live routed sources: yes
+Custom S-function count: 0
+Final DC voltage: 1400.047921 V
+Final PCC active power: 4.301804 MW
+Result: PASS

@@ -1,3 +1,12 @@
-Case,SCR,Mitigation,FFT_Hz,PronySigma_per_s,EigenDampingRatio,PowerOscRMS_pu,PeakCurrent_pu,VdcMaxDeviation_pu
-sso_before,5,0,4.84466552735504,0.0515777073913658,-0.00156147368289849,0.0677542251251147,0.974449524709431,0.0448709605604221
-sso_after,5,1,1.88827514648878,-1.39357591270526,0.116475111861388,2.65677469911387e-07,0.91441708289554,0.0148466696176117
+claim,evidence,calculation
+Saved final model operates without initialization,results/physical/fresh_session_audit.txt,New MATLAB process opens and simulates the SLX directly
+Four physical scenarios,results/physical/scenario_metrics.csv,analysis/run_physical_scenarios.m on saved SLX
+PMSG stator equations,results/physical/engineering_checks.csv,Measured stator d/q voltage and finite-difference d/q current residuals
+Independent shaft torque,results/physical/engineering_checks.csv,Native Cp lookup torque minus electromagnetic torque minus total-inertia acceleration
+DC energy conservation,results/physical/engineering_checks.csv,Finite-difference capacitor energy minus series-sensor DC power
+Weak-grid SSO amplification,results/physical/scenario_metrics.csv,PCC q standard deviation 2.25 to 3.25 s for identical wind step
+Mitigation response,results/physical/scenario_metrics.csv,PCC q standard deviation weak-grid mitigation on versus off
+FFT and transient Prony poles,results/physical/modal_estimates.csv,Detrended 2.05 to 4.5 s FFT and band-limited AR2 fit
+Full physical model eigenvalues,results/physical/linearized_modes.csv,Simulink Control Design 5.5 s snapshot of native connected 23-state model
+Numerical step sensitivity,results/physical/weak_grid_half_step.csv,0.5 ms max-step weak-grid run versus 1 ms run
+Live Scopes,artifacts/model_snapshots/Telemetry_and_Scopes_Live_Scopes.png,Twelve Scope inputs from current simulation signals

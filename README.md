@@ -1,72 +1,29 @@
-# Vataleni PMSG + SSO Simulink Project
+# Vataleni PMSG weak grid SSO model
 
-Self-contained reduced-order, averaged dq model of a 5 MW PMSG full-converter wind turbine for weak-grid sub-synchronous oscillation (SSO) and PLL-gain mitigation studies.
+The authoritative `model/Vataleni_PMSG_SSO_Final.slx` is a self-contained, averaged physical Simscape Electrical model of one 5 MW wind turbine with a permanent magnet synchronous generator (PMSG), full converter, DC capacitor, filter and weak AC grid. It runs in MATLAB R2025b with Simulink, Simscape and Simscape Electrical. Simulink Control Design is used only for optional modal linearization. No initialization script, project library, external data file or custom S-function is needed to press **Run**.
 
-- MATLAB: R2025b
-- Simulink: 25.2
-- Authoritative model: `model/Vataleni_PMSG_SSO_Final.slx`
-- Core custom Level-2 MATLAB S-Functions: none
-- Required manual initialization: none
-- Native math implementations: turbine/rotor, MSC, DC link, GSC, PLL, filter/grid current, and PCC
-- Embedded MATLAB Function blocks: one, for diagnostic vector assembly and reconstructed abc waveforms
+The validated reduced-order predecessor is preserved at Git tag `benchmark-aa80f23` and under `archive/benchmark-aa80f23/`. Its 4.84 Hz result does not describe this physical model.
 
-## Open and run
-
-From the repository root in a fresh MATLAB session:
+## Run the saved model
 
 ```matlab
 load_system('model/Vataleni_PMSG_SSO_Final.slx');
 out = sim('Vataleni_PMSG_SSO_Final');
 ```
 
-The model owns its default parameters, initial conditions, solver step, stop time and scenario inputs. Project scripts are not required for the standalone run.
+The model owns its default values in its Model Workspace. To select a scenario, edit `wind_final`, `grid_scr` and `mitigation_enable` there, or run `analysis/run_physical_scenarios.m`. The default is 12 m/s wind, nominal external SCR 10, mitigation off, with a 6 s `ode15s` run and a 1 ms maximum step. Scenario runs use a 12 to 13 m/s wind step at 2 s, nominal external SCR 10 or 5, and the same disturbance for the mitigated case. `parameters/VaxSim_Parameters.m` is an optional editable reference and is never called by the model.
 
-## Select a scenario inside the model
+The top level exposes the physical power path from the wind turbine to the grid, separate MSC and GSC/PLL control subsystems, a telemetry subsystem, and twelve live Scopes. The Scopes show measured shaft, machine, DC and PCC quantities and controller responses. Model snapshots are in `artifacts/model_snapshots/`.
 
-Open **Model Explorer > Model Workspace** for `Vataleni_PMSG_SSO_Final` and set the three variables below, then press **Run**. The grid-strength change occurs at 2 s. The default is the baseline case.
-
-| Case | `scr_initial` | `scr_final` | `mitigation_enable` |
-|---|---:|---:|---:|
-| Baseline | 10 | 10 | 0 |
-| Weak-grid SSO | 10 | 5 | 0 |
-| Mitigated weak grid | 10 | 5 | 1 |
-
-The 12 native Scope blocks are in **Measurements and Analysis Interface > Engineering Scopes**. They show wind, rotor, torque, converter, DC-link, PCC, PLL and active-power response channels. Each Scope has Dataset logging and a visible grid and legend; a saved-model run verified finite data from every Scope. The `parameters/VaxSim_Parameters.m` file is an optional parameter reference; the model does not call it.
-
-## Model fidelity
-
-The machine-side current loop is a first-order q-axis torque-current equivalent. The model does not resolve PMSG stator d/q voltage dynamics, semiconductor switching, PWM harmonics or shaft torsional modes. The 4.84 Hz SSO and damping metrics therefore characterize this reduced-order benchmark only, not a validated physical wind farm. See `docs/MODEL_EQUATIONS.md` and `docs/SOURCE_AUDIT.md` for equations and source classifications.
-
-## Run all scenarios
+## Reproduce the evidence
 
 ```matlab
-run('analysis/run_all_scenarios.m')
+run('analysis/run_physical_scenarios.m')
+run('validation/convergence_check.m')
 ```
 
-This regenerates baseline, wind-step, SSO and mitigation MAT files, CSV summaries and 17 figures.
+Then run `python analysis/analyse_physical_results.py`. Scenario CSVs, numerical checks and modal estimates are in `results/physical/`; regenerated figures are in `figures/physical/`. The numerical checks directly verify the PMSG d/q equations, speed conversion, torque, power and DC energy balances, converter losses, control limits and disturbance response.
 
-## Validate from scratch
+## Scope and findings
 
-```matlab
-run('validation/validate_project.m')
-```
-
-Headless equivalent:
-
-```powershell
-matlab -batch "cd('<repo-root>'); run('validation/validate_project.m')"
-```
-
-The validator throws an error unless all 20 checks pass.
-
-## Outputs
-
-- Scenario data: `results/baseline/`, `results/sso/`, `results/mitigation/`
-- Compact result tables: `results/*.csv`
-- Validation evidence: `results/validation/`
-- Figures: `figures/`
-- Technical report: `report/Vataleni_PMSG_SSO_Technical_Report.pdf` and `.docx`
-- Model guide: `report/Vataleni_PMSG_SSO_Model_Guide.pdf`
-- Verification report: `report/Vataleni_PMSG_SSO_Validation_Report.pdf`
-- Supervisor explainer: `report/Vataleni_PMSG_SSO_Progress_Explainer.pdf`
-- Architecture: `MODEL_ARCHITECTURE.md`
+The native PMSG block integrates stator electrical dynamics. The MSC and GSC use native bidirectional averaged three-phase converter blocks, so the model resolves control and network SSO dynamics but not switching harmonics. The observed weak-grid oscillation is a **decaying** approximately 4.7 Hz response, amplified by lower SCR; this model does not establish a sustained unstable mode. Raising the PLL proportional gain from 0.00558 to 0.02 rad/(s V) reduces the response for the tested wind disturbance. See `docs/TECHNICAL_REPORT.md`, `docs/MODEL_GUIDE.md` and `docs/VERIFICATION_REPORT.md` for methods, results and remaining assumptions.
